@@ -1,0 +1,19 @@
+node {
+  stage('Cloning Repo from Git'){
+    git branch: 'main', url: 'https://github.com/marlincia/jenkens-sonar.git'
+  }
+  stage('Scanning Code'){
+       def scannerHome = tool 'SonarScanner';
+       withSonarQubeEnv(InstallationName: 'Sonarqube') {
+       sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=Sonar-jenkins"
+      }
+    }
+  stage("Quality Gate"){
+       timeout(time: 2, unit: 'MINUTES'){
+       waitForQualityGate abortPipeline: true
+       }
+    }
+  stage('Deploy Ansible playbook'){
+    sh 'ansible-playbook playbook.yml'
+  }
+}
