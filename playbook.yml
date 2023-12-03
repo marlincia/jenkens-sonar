@@ -38,7 +38,10 @@
        src: oxer-html/
        dest: /usr/share/nginx/html/
        #remote_src=yes 
-       directory_mode=yes
+       directory_mode:
+     tags:
+        - dircontent
+
      when:
        - (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8")
 
