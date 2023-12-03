@@ -1,0 +1,8 @@
+node {
+  stage('Cloning Repo from Git'){
+    git 'https://github.com/marlincia/jenkens-sonar.git'
+  }
+  stage('Deploy Ansible playbook'){
+    sh 'ansible-playbook playbook.yml '
+  }
+}
