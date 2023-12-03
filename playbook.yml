@@ -34,9 +34,11 @@
        #- (ansible_facts['distribution'] == "Centos" and ansible_facts['distribution_major_version'] == "8")
 
    - name: Copy index file
-     template:
-       src: /oxer-html/*
+     copy:
+       src: /oxer-html/
        dest: /usr/share/nginx/html/
+       remote_src=yes 
+       directory_mode=yes
      when:
        - (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8")
 
