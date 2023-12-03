@@ -1,0 +1,46 @@
+---
+- hosts: all
+  become: true
+  tasks:
+   - name: remove nginx on ubuntu host
+     apt:
+      name: nginx
+      state: absent
+     when: 
+      - (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] == "22")
+
+   - name: remove all conf to /var/www/html/
+     shell: |
+         rm -rf /var/www/html/*
+     when:
+       - (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] == "22")
+
+   - name: Install nginx on Ubuntu
+     apt:
+       name: nginx
+       state: latest
+     when:
+       - (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] == "22")
+       #- (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] == "20")
+
+   - name: Install nginx on Centos
+     yum:
+       name: 
+         - nginx
+         - epel-release
+       state: present
+     when:
+       - (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8")
+       #- (ansible_facts['distribution'] == "Centos" and ansible_facts['distribution_major_version'] == "8")
+
+   - name: Copy index file
+     template:
+       src: /oxer-html/*
+       dest: /usr/share/nginx/html/
+     when:
+       - (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8")
+
+   - name: starting nginx service
+     service:
+         name: nginx
+         state: started
